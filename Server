@@ -1,0 +1,57 @@
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.Socket;
+import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+
+public class ServerSocket {
+	public final static int port=8000;
+
+	public static void main(String[] args) {
+		ExecutorService pool = Executors.newFixedThreadPool(50);
+		try {
+			java.net.ServerSocket socketServer= new java.net.ServerSocket(port);
+			
+				while(true){
+					try{
+					Socket socket= socketServer.accept();
+					Callable<Void> thread= new time(socket);
+					pool.submit(thread);
+					}catch(IOException e){
+						e.printStackTrace();
+					}
+				}
+			
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+
+	}
+
+	public static class time implements Callable<Void> {
+		Socket socket;
+		public time(Socket socket) {
+			this.socket=socket;
+		}
+	
+		@Override
+		public Void call() throws Exception {
+			
+			Writer writer= new OutputStreamWriter(socket.getOutputStream());
+			Date date= new Date();
+			writer.write(date.toString()+"\r\n");	
+			writer.flush();
+			socket.close();
+			return null;
+			
+			}
+		}
+	
+	
+
+}
