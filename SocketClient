@@ -1,0 +1,27 @@
+package test;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
+
+public class SocketClient {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try {
+			Socket socket =  new Socket("localhost",8000);
+			InputStream raw= new BufferedInputStream(socket.getInputStream());
+			int c;
+			while((c=raw.read())!=-1){
+				System.out.print((char)c);
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+}
